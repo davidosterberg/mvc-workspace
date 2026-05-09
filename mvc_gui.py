@@ -334,15 +334,20 @@ class MVCGui(QWidget):
         self.workspace_combo.setCurrentIndex(0)
         allow_create = True
         allow_load = True
+        tip = ""
         try:
             mvc = self._get_mvc()
-            workspace = mvc._get_workspace()
-            allow_load = False
+            try:
+                workspace = mvc._get_workspace()
+                allow_load = False
+            except MVCError as err:
+                tip = "\nCreate or load a project to associate a project."
+                raise
             mvc._get_project(workspace.project)
             allow_create = False
             self.errLabel.setText("")
         except MVCError as err:
-            self.errLabel.setText(f"{err}")
+            self.errLabel.setText(f"{err}{tip}")
         self.create_button.setEnabled(allow_create)
         self.load_button.setEnabled(allow_load)
 
